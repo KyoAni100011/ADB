@@ -144,6 +144,8 @@ const AuthProvider = ({ children }) => {
     // Remove tokens from cookies
     removeCookie("accessToken");
     removeCookie("refreshToken");
+
+    return true;
   };
 
   return (

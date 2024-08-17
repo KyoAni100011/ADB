@@ -4,29 +4,17 @@ import {
   Button,
   Box,
   Typography,
-  FormControl,
-  InputLabel,
-  Select,
-  MenuItem,
-  Grid,
   Link as MUILink,
 } from "@mui/material";
 import { Link, useNavigate } from "react-router-dom";
-import { registerStudent } from "../apis/user.api";
+import { useAuth } from "../contexts/AuthContext";
 import Toast from "../components/Toast";
 
-const SignUpForm = () => {
-  const [formValues, setFormValues] = useState({
-    UserName: "",
-    Password: "",
-    PhoneNumber: "",
+const LoginForm = () => {
+  // State to hold form data
+  const [formData, setFormData] = useState({
     Email: "",
-    Street: "",
-    Ward: "",
-    District: "",
-    City: "",
-    DateOfBirth: "",
-    Gender: "",
+    Password: "",
   });
 
   const [open, setOpen] = useState(false);
@@ -35,38 +23,36 @@ const SignUpForm = () => {
 
   const navigate = useNavigate();
 
+  const { login } = useAuth();
+
+  // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
-    setFormValues((prevValues) => ({
-      ...prevValues,
+    setFormData((prevData) => ({
+      ...prevData,
       [name]: value,
     }));
   };
 
+  // Handle form submission
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setFormValues((prevValues) => ({
-      ...prevValues,
-      DateOfBirth: new Date(formValues.DateOfBirth),
-    }));
 
+    // Here you can add logic to submit the data to an API
     try {
-      const response = await registerStudent(formValues);
+      const response = await login(formData);
       if (response.success) {
-        setMessage(response.message || "Registration successful");
-        setSeverity("success");
+        setMessage(response.message);
+        setSeverity(severity);
         setOpen(true);
         setTimeout(() => navigate("/"), 5000);
       } else {
-        setMessage(response.message || "Registration failed");
+        setMessage(response.message);
         setSeverity("error");
         setOpen(true);
       }
     } catch (error) {
-      console.error(error);
-      setMessage("An unexpected error occurred");
-      setSeverity("error");
-      setOpen(true);
+      console.log(error);
     }
   };
 
@@ -93,8 +79,8 @@ const SignUpForm = () => {
           p: 3,
         }}
       >
-        <Typography variant="h4" component="h4" gutterBottom textAlign="center">
-          Sign Up
+        <Typography variant="h2" component="h2" gutterBottom textAlign="center">
+          Let's start
         </Typography>
         <Box
           component="form"
@@ -109,12 +95,14 @@ const SignUpForm = () => {
           }}
         >
           <TextField
-            label="User Name"
-            name="UserName"
+            label="Email"
+            name="Email"
             variant="outlined"
+            type="email"
             fullWidth
             margin="normal"
             required
+            value={formData.Email}
             onChange={handleChange}
           />
           <TextField
@@ -125,89 +113,9 @@ const SignUpForm = () => {
             fullWidth
             margin="normal"
             required
+            value={formData.Password}
             onChange={handleChange}
           />
-          <TextField
-            label="Phone Number"
-            name="PhoneNumber"
-            variant="outlined"
-            fullWidth
-            margin="normal"
-            required
-            onChange={handleChange}
-          />
-          <TextField
-            label="Email"
-            name="Email"
-            variant="outlined"
-            type="email"
-            fullWidth
-            margin="normal"
-            required
-            onChange={handleChange}
-          />
-          <Grid container spacing={2} margin="normal">
-            <Grid item xs={6}>
-              <TextField
-                label="Street"
-                name="Street"
-                variant="outlined"
-                fullWidth
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="Ward"
-                name="Ward"
-                variant="outlined"
-                fullWidth
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="District"
-                name="District"
-                variant="outlined"
-                fullWidth
-                onChange={handleChange}
-              />
-            </Grid>
-            <Grid item xs={6}>
-              <TextField
-                label="City"
-                name="City"
-                variant="outlined"
-                fullWidth
-                onChange={handleChange}
-              />
-            </Grid>
-          </Grid>
-          <TextField
-            label="Date of Birth"
-            name="DateOfBirth"
-            variant="outlined"
-            type="date"
-            fullWidth
-            margin="normal"
-            required
-            onChange={handleChange}
-            InputLabelProps={{ shrink: true }}
-          />
-          <FormControl fullWidth margin="normal" required>
-            <InputLabel>Gender</InputLabel>
-            <Select
-              name="Gender"
-              value={formValues.Gender}
-              onChange={handleChange}
-              label="Gender"
-            >
-              <MenuItem value="M">Male</MenuItem>
-              <MenuItem value="F">Female</MenuItem>
-              <MenuItem value="Other">Other</MenuItem>
-            </Select>
-          </FormControl>
           <Button
             type="submit"
             variant="contained"
@@ -215,17 +123,17 @@ const SignUpForm = () => {
             sx={{ mt: 2 }}
             fullWidth
           >
-            Sign Up
+            Login
           </Button>
           <Typography
             variant="body2"
             sx={{ mt: 2, textAlign: "center", color: "text.secondary" }}
           >
-            Already have an account?
+            Don't have an account?
           </Typography>
           <MUILink
             component={Link}
-            to="/login"
+            to="/signup"
             variant="button"
             color="primary"
             textAlign="center"
@@ -234,7 +142,7 @@ const SignUpForm = () => {
             py={0.5}
             sx={{ mt: 2, textDecoration: "none" }}
           >
-            Login
+            Sign Up
           </MUILink>
         </Box>
       </Box>
@@ -242,4 +150,4 @@ const SignUpForm = () => {
   );
 };
 
-export default SignUpForm;
+export default LoginForm;

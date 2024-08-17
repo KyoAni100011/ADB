@@ -23,7 +23,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MoreIcon from "@mui/icons-material/MoreVert";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 
 // Styled components
@@ -161,8 +161,9 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] = useState(null);
   const [cartAnchorEl, setCartAnchorEl] = useState(null);
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
   const [isAuth, setAuth] = useState(null);
+  const navigate = useNavigate();
 
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
@@ -203,6 +204,13 @@ const Navbar = () => {
     setAuth(user !== null);
     console.log(isAuth);
   }, [user]);
+
+  const handleLogOut = () => {
+    logout();
+    setTimeout(() => {
+      navigate("/login");
+    }, 3000);
+  };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -301,7 +309,7 @@ const Navbar = () => {
         <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
         <MenuItem onClick={handleMenuClose}>My account</MenuItem>
         <MenuItem
-          onClick={handleMenuClose}
+          onClick={handleLogOut}
           sx={{
             color: "red",
           }}

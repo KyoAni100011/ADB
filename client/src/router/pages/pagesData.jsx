@@ -23,7 +23,7 @@ const pagesData = [
     title: "Home",
   },
   {
-    path: "/course",
+    path: "/course/:slug",
     element: <CourseDetail />,
     title: "Course detail",
   },
